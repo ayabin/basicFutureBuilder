@@ -77,8 +77,9 @@ class ArticleList extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (ctx, i) {
-              return Card(
-                child: Text(snapshot.data[i].title),
+              return ListTile(
+                title: Text(snapshot.data[i].title),
+                subtitle: Text(snapshot.data[i].user.id),
               );
             },
           );
