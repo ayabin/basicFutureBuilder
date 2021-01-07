@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:webview_flutter/webview_flutter.dart';
 
 class User {
   final String id;
@@ -16,14 +17,14 @@ class User {
 }
 
 class Article {
-  final String id;
+  final String url;
   final String title;
   final User user;
-  Article({this.id, this.title, this.user});
+  Article({this.url, this.title, this.user});
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
-      id: json['id'],
+      url: json['url'],
       title: json['title'],
       user: User.fromJson(json['user']),
     );
@@ -92,8 +93,8 @@ class ArticleList extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => DetailPage(
-                          id: snapshot.data[i].id,
                           title: snapshot.data[i].title,
+                          url: snapshot.data[i].url,
                         ),
                       ),
                     );
@@ -113,16 +114,18 @@ class ArticleList extends StatelessWidget {
 }
 
 class DetailPage extends StatelessWidget {
-  final String id;
+  final String url;
   final String title;
-  DetailPage({this.id, this.title});
+  DetailPage({this.url, this.title});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
       ),
-      body: Center(child: Text('Detail Page Contents')),
+      body: WebView(
+        initialUrl: url,
+      ),
     );
   }
 }
