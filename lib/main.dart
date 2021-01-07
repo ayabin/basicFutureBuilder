@@ -56,12 +56,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Test002 Demo'),
-        ),
-        body: ArticleList(),
-      ),
+      home: ArticleList(),
     );
   }
 }
@@ -70,26 +65,64 @@ class ArticleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future articles = QiitaClient.fetchArticle();
-    return FutureBuilder(
-      future: articles,
-      builder: (BuildContext context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-            itemCount: snapshot.data.length,
-            itemBuilder: (ctx, i) {
-              return ListTile(
-                leading: Image.network(snapshot.data[i].user.iconUrl),
-                title: Text(snapshot.data[i].title),
-                subtitle: Text(snapshot.data[i].user.id),
-              );
-            },
-          );
-        } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('FutureBuilder Test'),
+      ),
+      body: FutureBuilder(
+        future: articles,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (ctx, i) {
+                return ListTile(
+                  // leading: CircleAvatar(
+                  //   child: Image.network(
+                  //     snapshot.data[i].user.iconUrl,
+                  //   ),
+                  // ),
+                  leading: CircleAvatar(
+                    backgroundImage:
+                        NetworkImage(snapshot.data[i].user.iconUrl),
+                  ),
+                  title: Text(snapshot.data[i].title),
+                  subtitle: Text(snapshot.data[i].user.id),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => DetailPage(
+                          id: snapshot.data[i].id,
+                          title: snapshot.data[i].title,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class DetailPage extends StatelessWidget {
+  final String id;
+  final String title;
+  DetailPage({this.id, this.title});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Center(child: Text('Detail Page Contents')),
     );
   }
 }
