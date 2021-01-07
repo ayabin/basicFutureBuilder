@@ -78,6 +78,7 @@ class ArticleList extends StatelessWidget {
             itemCount: snapshot.data.length,
             itemBuilder: (ctx, i) {
               return ListTile(
+                leading: Image.network(snapshot.data[i].user.iconUrl),
                 title: Text(snapshot.data[i].title),
                 subtitle: Text(snapshot.data[i].user.id),
               );
